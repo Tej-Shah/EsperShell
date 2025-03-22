@@ -61,7 +61,7 @@ int tss_help(char **args)
 	return 1;
 }
 
-int lsh_exit(char **args)
+int tss_exit(char **args)
 {
 	(void) args;
 	return 0;
@@ -74,7 +74,7 @@ int tss_launch(char **args)
 	int status;
 
 	pid = fork();
-	wpid = NULL;
+	wpid = waitpid(pid, &status, WUNTRACED);;
 	if (pid == 0)
 	{
 		if (execvp(args[0], args) == -1)
@@ -112,7 +112,7 @@ int tss_execute(char **args)
 			return (*builtin_func[i])(args);
 		}
 	}
-	return lsh_launch(args);
+	return tss_launch(args);
 }
 
 char *tss_read_line(void)
@@ -156,7 +156,7 @@ char *tss_read_line(void)
 	}
 }
 
-char **lsh_split_line(char *line)
+char **tss_split_line(char *line)
 {
 	int bufsize = LSH_TOK_BUFSIZE, position = 0;
 	char **tokens = malloc(bufsize * sizeof(char*));
@@ -200,12 +200,15 @@ void tss_loop(void)
 		printf("> ");
 		line = tss_read_line();
 		args = tss_split_line(line);
-		status = tss_execute(agrs);
+		status = tss_execute(args);
 	} while (status);
 }
 
 int main(int argc, char **argv)
 {
+	(void) argc;
+	(void) argv;
+
 	tss_loop();
 	return (0);
 }

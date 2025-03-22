@@ -12,6 +12,9 @@ int tss_cd(char **args);
 int tss_help(char **args);
 int tss_exit(char **args);
 
+// 1. fix permission denied when running code
+// 2. fix wpid issues in tss_launch function
+
 char *builtin_str[] = {
 	"cd",
 	"help",

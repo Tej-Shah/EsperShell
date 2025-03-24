@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #define LSH_RL_BUFSIZE 1024
 #define LSH_TOK_BUFSIZE 64
@@ -31,20 +32,23 @@ int tss_num_builtins() {
 	return sizeof(builtin_str) / sizeof(char *);
 }
 
-int tss_cd(char **args)
-{
-	if (args[1] == NULL)
+int tss_cd(char **args) {
+    // Check if the argument is provided
+    if (args[1] == NULL)
 	{
-		fprintf(stderr, "tss: expected argument to \"cd\"\n");
-	}
+        fprintf(stderr, "tss: expected argument to \"cd\"\n");
+        return (1);
+    }
 	else
 	{
-		if (chdir(args[1]) != 0)
+        // Attempt to change the directory
+        if (chdir(args[1]) != 0)
 		{
-      		perror("tss");
-    	}
-	}
-	return 1;
+            perror("tss");
+            return (1);
+        }
+    }
+    return (0);
 }
 
 int tss_help(char **args)
